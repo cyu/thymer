@@ -1,17 +1,55 @@
 $().ready(function(){
   var timerList = $('#timer-list');
+
   var timers = [];
 
-  var UpdateLoop = {
-    start:function() {
+  var Thymer = {
+    init:function() {
+      if ('localStorage' in window) {
+        var timersData = window.localStorage.getItem('timers');
+        console.log(timersData);
+        if (timersData) {
+          var timersData = JSON.parse(timersData);
+          for (var i in timersData) {
+            var t = timersData[i];
+            timers.push(new Timer(t.name, t.seconds, t.started, t.finished));
+          }
+          this._start();
+        }
+      }
+    },
+    addTimer:function(timer) {
+      timers.push(timer);
+      this._saveTimers();
+      this._start();
+    },
+    removeTimer:function(timer) {
+      for (var i in timers) {
+        if (timers[i] == timer) {
+          timers.splice(i,1);
+          this._saveTimers();
+          break;
+        }
+      }
+    },
+    _saveTimers:function() {
+      if ('localStorage' in window) {
+        var arr = [];
+        for (var i in timers) {
+          arr.push(timers[i].toObject());
+        }
+        window.localStorage.setItem('timers', JSON.stringify(arr));
+      }
+    },
+    _start:function() {
       if (!this.started) {
         this.started = true;
         this.interval = setInterval(function(){
-          UpdateLoop.update();
+          Thymer._update();
         },1000);
       }
     },
-    update:function() {
+    _update:function() {
       if (timers.length > 0) {
         for (var i in timers) {
           timers[i].update();
@@ -30,35 +68,40 @@ $().ready(function(){
     this.seconds = seconds;
     this.started = started ? started : new Date().getTime();
     this.finished = finished || false;
-    this.start();
+
+    if (!this.name || this.name.trim() == "") {
+      this.name = name = "Timer " + Timer.counter++;
+    }
+
+    this.el = $("<li><h2 class=name></h2><div class=status></div><div class=progress-box><div class=progress></div></div><a href=# class=remove title=Remove><img alt='Remove Icon' src=minus_alt_16x16.png></a></li>");
+    timerList.append(this.el);
+
+    this.el.children('.name').text(name);
+    this.el.children('.remove').click(this, function(event){ event.data.remove(); });
+
+    this.status   = this.el.children('.status');
+    this.progress = this.el.find('.progress');
+
+    if (this.finished) {
+      this._displayCompleted();
+    } else {
+      this.update();
+    }
   };
   Timer.prototype = {
-    start:function() {
-      this.el = $("<li>" + this.buildDisplayString() + "</li>");
-      timerList.append(this.el);
-    },
     update:function() {
       if (!this.finished) {
         if (this.check()) {
-          var timer = this;
-          var removeLink = $('<a href="#">remove</a>').click(function(){
-            timer.remove();
-          });
-          this.el.text('ALARM!!! - ' + this.name + ' ');
-          this.el.append(removeLink);
+          this._displayCompleted();
         } else {
-          this.el.text(this.buildDisplayString());
+          this.status.text(this._buildDisplayString());
+          this._setProgress(this.elapsed() / this.seconds);
         }
       }
     },
     remove:function() {
       this.el.remove();
-      for (var i in timers) {
-        if (timers[i] == this) {
-          timers.splice(i,1);
-          break;
-        }
-      }
+      Thymer.removeTimer(this);
     },
     check:function() {
       var remaining = this.calculateRemaining();
@@ -68,10 +111,20 @@ $().ready(function(){
       }
       return false;
     },
-    calculateRemaining:function() {
-      return this.seconds - Math.floor((new Date().getTime() - this.started) / 1000);
+    elapsed:function() {
+      return Math.floor((new Date().getTime() - this.started) / 1000);
     },
-    buildDisplayString:function() {
+    calculateRemaining:function() {
+      return this.seconds - this.elapsed();
+    },
+    _setProgress:function(v) {
+      this.progress.css('width', Math.floor(v * 100) + '%');
+    },
+    _displayCompleted:function() {
+      this.status.text('Completed');
+      this._setProgress(1);
+    },
+    _buildDisplayString:function() {
       var s = [];
 
       var remaining = this.calculateRemaining();
@@ -79,7 +132,7 @@ $().ready(function(){
       remaining = this.buildTimeSegment('m', 60, remaining, s);
       s.push(remaining + 's');
 
-      return s.join(' ') + ' - ' + this.name;
+      return s.join(' ');
     },
     buildTimeSegment:function(suffix, divisor, secondsRemaining, segments) {
       var units = Math.floor(secondsRemaining / divisor);
@@ -98,38 +151,26 @@ $().ready(function(){
       };
     }
   };
+  Timer.counter = 0;
 
-  $('#add-timer-form form').submit(function(){
-    var seconds = parseInt($('#secs').val()) +
-        (parseInt($('#mins').val()) * 60) +
-        (parseInt($('#hours').val()) * 60 * 60);
+  var formHint = $('#add-timer-form small');
+  $('#add-timer-form input').keypress(function(event) {
+    if (event.which == '13') {
+      event.preventDefault();
+      var seconds = parseInt($('#secs').val()) +
+          (parseInt($('#mins').val()) * 60) +
+          (parseInt($('#hours').val()) * 60 * 60);
 
-    var timer = new Timer($('#timer-name').val(), seconds)
-    timers.push(timer);
-
-    // store timers
-    if ('localStorage' in window) {
-      var arr = [];
-      for (var i in timers) {
-        arr.push(timers[i].toObject());
-      }
-      window.localStorage.setItem('timers', JSON.stringify(arr));
+      Thymer.addTimer(new Timer($('#timer-name').val(), seconds));
+      $('#timer-name').val('');
     }
-
-    UpdateLoop.start();
-    return false;
+  }).focus(function(){
+    formHint.css('visibility', 'visible');
+  }).blur(function(){
+    formHint.css('visibility', 'hidden');
   });
+  formHint.css('visibility', 'hidden');
 
   // load stored timers
-  if ('localStorage' in window) {
-    var timersData = window.localStorage.getItem('timers');
-    if (timersData) {
-      var timersData = JSON.parse(timersData);
-      for (var i in timersData) {
-        var t = timersData[i];
-        timers.push(new Timer(t.name, t.seconds, t.started, t.finished));
-      }
-      UpdateLoop.start();
-    }
-  }
+  Thymer.init();
 });

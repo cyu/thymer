@@ -1,0 +1,117 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background-color: #eee;
+  color: #333;
+  font-family: Verdana;
+  text-align: center;
+}
+header, #content {
+  background-color: #fff;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  margin: 0 auto;
+  width: 35em;
+}
+header {
+  padding: 2em 0;
+}
+header h1:before {
+  content: '\2014  ';
+  font-weight: normal;
+}
+header h1:after {
+  content: '  \2014';
+  font-weight: normal;
+}
+#content {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 2em;
+}
+#add-timer-form {
+  font-size: 1.5em;
+  line-height: 1.7em;
+  margin-bottom: 2em;
+}
+#add-timer-form input {
+  font-size: 1em;
+}
+#add-timer-form input.text {
+  border: 1px solid #ccc;
+  padding: .2em;
+}
+#add-timer-form input.time-input {
+  border: 1px solid #ccc;
+  text-align: center;
+  width: 2em;
+}
+#add-timer-form input#timer-name {
+  width: 10.75em
+}
+#add-timer-form small {
+  color: #a9a9a9;
+  display: block;
+  font-size: .5em;
+  font-style: italic;
+  font-weight: bold;
+  line-height: 1em;
+}
+ul#timer-list {
+  list-style: none;
+  margin: 1em 1.7em;
+}
+ul#timer-list li {
+  height: 2.5em;
+  margin-bottom: 2em;
+  position: relative;
+}
+ul#timer-list li h2 {
+  bottom: 3px;
+  font-weight: normal;
+  font-size: 2em;
+  left: 0;
+  line-height: 1em;
+  position: absolute;
+  text-align: left;
+}
+ul#timer-list li .status {
+  color: #a9a9a9;
+  bottom: 3px;
+  font-size: 1.2em;
+  line-height: 1em;
+  margin-right: .5em;
+  position: absolute;
+  right: 17px;
+}
+ul#timer-list li .progress-box {
+  background-color: #a9a9a9;
+  bottom: 0;
+  height: 2px;
+  position: absolute;
+  width: 100%;
+}
+ul#timer-list li .progress {
+  background-color: #333;
+  height: 100%;
+}
+ul#timer-list li .remove {
+  bottom: 3px;
+  line-height: 16px;
+  position: absolute;
+  right: 0;
+}
+footer {
+  color: #999;
+  font-family: Georgia;
+  margin: .5em auto 2em;
+  text-align: right;
+  width: 35em;
+}
+footer p { font-size: .9em; margin-right: .5em; }
+footer a:link,
+footer a:active,
+footer a:visited {
+  color: #999;
+}
