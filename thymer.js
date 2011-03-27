@@ -16,10 +16,6 @@ $().ready(function(){
           this._start();
         }
       }
-
-      if (window.webkitNotifications && window.webkitNotifications.checkPermission() != 0) {
-        window.webkitNotifications.requestPermission();
-      }
     },
     addTimer:function(timer) {
       timers.push(timer);
