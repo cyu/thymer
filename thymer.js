@@ -91,6 +91,7 @@ $().ready(function(){
     update:function() {
       if (!this.finished) {
         if (this.check()) {
+          this._alarm();
           this._displayCompleted();
           Thymer.saveTimers();
         } else {
@@ -116,6 +117,11 @@ $().ready(function(){
     },
     calculateRemaining:function() {
       return this.seconds - this.elapsed();
+    },
+    _alarm:function() {
+      if (window.webkitNotifications && window.webkitNotifications.checkPermission() == 0) {
+        window.webkitNotifications.createNotification('clock_32x32.png', 'Thymer', '"' + this.name + '" timer has completed').show();
+      }
     },
     _setProgress:function(v) {
       this.progress.css('width', Math.floor(v * 100) + '%');
@@ -163,6 +169,12 @@ $().ready(function(){
 
       Thymer.addTimer(new Timer($('#timer-name').val(), seconds));
       $('#timer-name').val('');
+
+      // request notifications permission if API is supported.  We do
+      // this here because we can only do this on user triggered events.
+      if (window.webkitNotifications && window.webkitNotifications.checkPermission() != 0) {
+        window.webkitNotifications.requestPermission();
+      }
     }
   }).focus(function(){
     formHint.css('visibility', 'visible');
