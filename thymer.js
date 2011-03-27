@@ -7,7 +7,6 @@ $().ready(function(){
     init:function() {
       if ('localStorage' in window) {
         var timersData = window.localStorage.getItem('timers');
-        console.log(timersData);
         if (timersData) {
           var timersData = JSON.parse(timersData);
           for (var i in timersData) {
@@ -16,6 +15,10 @@ $().ready(function(){
           }
           this._start();
         }
+      }
+
+      if (window.webkitNotifications && window.webkitNotifications.checkPermission() != 0) {
+        window.webkitNotifications.requestPermission();
       }
     },
     addTimer:function(timer) {
