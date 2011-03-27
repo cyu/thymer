@@ -23,19 +23,19 @@ $().ready(function(){
     },
     addTimer:function(timer) {
       timers.push(timer);
-      this._saveTimers();
+      this.saveTimers();
       this._start();
     },
     removeTimer:function(timer) {
       for (var i in timers) {
         if (timers[i] == timer) {
           timers.splice(i,1);
-          this._saveTimers();
+          this.saveTimers();
           break;
         }
       }
     },
-    _saveTimers:function() {
+    saveTimers:function() {
       if ('localStorage' in window) {
         var arr = [];
         for (var i in timers) {
@@ -96,6 +96,7 @@ $().ready(function(){
       if (!this.finished) {
         if (this.check()) {
           this._displayCompleted();
+          Thymer.saveTimers();
         } else {
           this.status.text(this._buildDisplayString());
           this._setProgress(this.elapsed() / this.seconds);
