@@ -119,9 +119,13 @@ $().ready(function(){
       return this.seconds - this.elapsed();
     },
     _alarm:function() {
+      // show a notification if the browser supports it.
       if (window.webkitNotifications && window.webkitNotifications.checkPermission() == 0) {
         window.webkitNotifications.createNotification('clock_32x32.png', 'Thymer', '"' + this.name + '" timer has completed').show();
       }
+
+      // play the alarm sound
+      document.getElementById('alarm-sound').play();
     },
     _setProgress:function(v) {
       this.progress.css('width', Math.floor(v * 100) + '%');
@@ -161,7 +165,7 @@ $().ready(function(){
 
   var formHint = $('#add-timer-form small');
   $('#add-timer-form input').keypress(function(event) {
-    if (event.which == '13') {
+    if (event.which == '13') { // Enter key
       event.preventDefault();
       var seconds = parseInt($('#secs').val()) +
           (parseInt($('#mins').val()) * 60) +
