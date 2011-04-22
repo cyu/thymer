@@ -72,11 +72,12 @@ $().ready(function(){
       this.name = name = "Timer " + Timer.counter++;
     }
 
-    this.el = $("<li><h2 class=name></h2><div class=status></div><div class=progress-box><div class=progress></div></div><a href=# class=remove title=Remove><img alt='Remove Icon' src=minus_alt_16x16.png></a></li>");
+    this.el = $("<li><h2 class=name></h2><div class=status></div><div class=progress-box><div class=progress></div></div><a href=# class=remove title=Remove><span>Remove</span></a><a href=# class=reset title=Reset><span>Reset</span></a></li>");
     timerList.append(this.el);
 
     this.el.children('.name').text(name);
     this.el.children('.remove').click(this, function(event){ event.data.remove(); });
+    this.el.children('.reset').click(this, function(event){ event.data.reset(); });
 
     this.status   = this.el.children('.status');
     this.progress = this.el.find('.progress');
@@ -103,6 +104,12 @@ $().ready(function(){
     remove:function() {
       this.el.remove();
       Thymer.removeTimer(this);
+    },
+    reset:function() {
+      this.started = new Date().getTime();
+      this.finished = false;
+      Thymer.saveTimers();
+      this.update();
     },
     check:function() {
       var remaining = this.calculateRemaining();
