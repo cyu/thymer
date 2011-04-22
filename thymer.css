@@ -15,9 +15,7 @@ header, #content {
   margin: 0 auto;
   width: 35em;
 }
-header {
-  padding: 2em 0;
-}
+header { padding: 2em 0; position: relative; }
 header h1:before {
   content: '\2014  ';
   font-weight: normal;
@@ -25,6 +23,13 @@ header h1:before {
 header h1:after {
   content: '  \2014';
   font-weight: normal;
+}
+header #update {
+  font-size: 0.8em;
+  margin-right: 1em;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 #content {
   border-bottom: 1px solid #ccc;

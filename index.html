@@ -1,11 +1,13 @@
 <!doctype html>
-<html>
+<html manifest="thymer.appcache">
 <head>
 <title>Thymer</title>
 <link href=thymer.css rel=stylesheet type=text/css>
 </head>
 <body>
+
 <header>
+  <p id=update style=display:none>A new update is available. <a href=# id=update-button>Update</a></p>
   <h1>Thymer</h1>
 </header>
 
@@ -32,7 +34,7 @@
   <source src=alarm.wav type=audio/wav />
 </audio>
 
-<script src=http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js></script>
+<script src=jquery-1.5.2.min.js></script>
 <script src=thymer.js></script>
 </body>
 </html>

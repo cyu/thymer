@@ -196,4 +196,18 @@ $().ready(function(){
 
   // load stored timers
   Thymer.init();
+
+  // check for updates
+  if ('applicationCache' in window) {
+    $('#update-button').click(function() {
+      // Ensure the browser uses the latest version of the code
+      window.applicationCache.swapCache();
+      // Reload the application
+      window.location.reload();
+    });
+
+    window.applicationCache.addEventListener('updateready', function() {
+      $("#update").show();
+    }, false);
+  }
 });
