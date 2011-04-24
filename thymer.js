@@ -209,5 +209,10 @@ $().ready(function(){
     window.applicationCache.addEventListener('updateready', function() {
       $("#update").show();
     }, false);
+
+    // Check for updates when the browser comes back online
+    $(document.body).bind('online', function(){
+      window.applicationCache.update();
+    });
   }
 });
